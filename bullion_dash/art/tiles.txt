@@ -1,0 +1,44 @@
+# Bullion Dash tiles, 5x6 (the original's 10x14 drawings at half size).
+# Every pixel is drawn: F = the background pen (black), so a tile repaints
+# its whole cell. Order: empty, brick, solid, ladder, bar, gold.
+FFFFF
+FFFFF
+FFFFF
+FFFFF
+FFFFF
+FFFFF
+
+11121
+11121
+22222
+21111
+21111
+22222
+
+4433F
+4333F
+3333F
+3333F
+3333F
+FFFFF
+
+5FFF5
+55555
+5FFF5
+5FFF5
+55555
+5FFF5
+
+FFFFF
+66666
+6FF6F
+FFFFF
+FFFFF
+FFFFF
+
+FFFFF
+FFFFF
+FF8FF
+F787F
+F777F
+77777

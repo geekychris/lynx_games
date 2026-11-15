@@ -1,0 +1,50 @@
+# The runner and the guards, 5x6: pen 9 body, A head and arms, 3 the belt
+# (a guard carrying gold shows it there). Guards are the same art with the
+# pens mapped to the original's red/orange. Order: stand, run 1, run 2,
+# climb (flipped for the other arm), hang, dig right (flipped: left),
+# trapped (head and shoulders out of the hole).
+.AAA.
+A999A
+.939.
+.999.
+.9.9.
+.9.9.
+
+.AAA.
+A999A
+.939.
+.999.
+.9.9.
+9...9
+
+.AAA.
+A999A
+.939.
+.999.
+..99.
+.99..
+
+AAAA.
+.999.
+.939A
+.999.
+.9.9.
+.9.9.
+
+A.A.A
+A999A
+.939.
+.999.
+.9.9.
+.9.9.
+
+.AAA.
+A999.
+.939.
+.99AA
+.9.9.
+.9.9.
+
+.AAA.
+A999A
+.939.
