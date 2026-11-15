@@ -60,6 +60,7 @@ picks up new games.
 | <img src="bullion_dash/images/bullion_dash.png" width="160" alt="Bullion Dash"> | [Bullion Dash](bullion_dash) | dig traps, take the gold, climb out: all 150 repaired levels on one 160x102 screen (5x6 tiles), the original's fixed guards and path search, its four-channel tune on Mikey; bot tests win levels by route search |
 | <img src="jump_quest/images/jump_quest.png" width="160" alt="Jump Quest"> | [Jump Quest](jump_quest) | RJ and Dale's side-scrolling platformer: the original's physics, enemies, items and three levels, all 14 rows on screen; tiles scrolled with Suzy's HOFF, the original's tune on Mikey, 46-50 fps; a bot game and the solver's routes through all three levels |
 | <img src="boing_twist/images/boing_twist.png" width="160" alt="Boing Twist"> | [Boing Twist](boing_twist) | the twisty puzzle on the Boing ball: twist bands and flip halves until the picture is whole; the original's rules, 17 pictures and ten rooms; the ball drawn by the 6502 from its texture into a Suzy sprite, the title's Boing ball turned by colour cycling, Suzy-scaled previews, stretch/tilt floors; a bot test solves a scramble |
+| <img src="sky_knights/images/sky_knights.png" width="160" alt="Sky Knights"> | [Sky Knights](sky_knights) | joust on flying mounts: flap above the enemy knights, take their pods before they hatch; the original's rules in its 320x256 world drawn at 160x102, Suzy sprites with an erase pass instead of a clear, the original's tune on Mikey, 50 fps; a bot test plays four waves |
 
 ## Layout
 
