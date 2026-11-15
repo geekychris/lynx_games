@@ -28,12 +28,12 @@
 #define ROW_ROAD_1   11
 #define ROW_START    12
 
-/* port: the Lynx screen (160x102): HUD line, 13 rows of 7, timer bar */
+/* port: the Lynx screen (160x102): HUD line, 13 rows of 7, a black strip */
 #define HUD_H        7
 #define ROW_H        7
 #define FIELD_Y      HUD_H                       /* 7 */
 #define ROW_Y(r)     (FIELD_Y + (r) * ROW_H)
-#define TIMER_Y      99                          /* 3 lines, 98 is a gap */
+#define BOTTOM_Y     98                          /* the 4 lines under the field */
 
 #define STATE_TITLE    0
 #define STATE_PLAYING  1
@@ -46,9 +46,8 @@
 #define DIR_LEFT  (-1)
 #define DIR_RIGHT  1
 
-/* port (added): a time limit per frog, the original had none. 50 Hz. */
+/* port: 50 Hz, the original's PAL speeds */
 #define FRAME_HZ    50
-#define TIME_LIMIT  (60 * FRAME_HZ)
 
 /* the palette (src/render.c) */
 #define C_GRASS   1

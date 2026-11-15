@@ -2,7 +2,7 @@
 #ifndef SOUND_H
 #define SOUND_H
 #include <stdint.h>
-enum { S_HOP, S_SPLAT, S_SPLASH, S_HOME, S_LEVEL, S_OVER, S_TIME };
+enum { S_HOP, S_SPLAT, S_SPLASH, S_HOME, S_LEVEL, S_OVER };
 void sound_init(void);
 void sound(uint8_t s);
 void sound_tick(void);          /* once a frame: decays, jingles, music */

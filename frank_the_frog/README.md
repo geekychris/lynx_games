@@ -4,7 +4,7 @@ Port of `amiga_mcp/examples/frank_the_frog`: hop Frank across five lanes of
 traffic and a river of logs and lily-pad rafts into the four ponds on the
 far bank. 10 points for each new row, 50 for a pond, 1000 for each level
 (all four ponds); every level the traffic and the river speed up (up to
-level 6). Three lives, a timer per frog.
+level 6). Three lives, no time limit (as in the original).
 
 ![Frank the Frog](images/frank_the_frog.png)
 
@@ -30,7 +30,7 @@ level 6). Three lives, a timer per frog.
 
 - **One chain of Suzy sprites a frame** (`src/render.c`): the HUD strip, the
   13 rows, the 30 lane objects, the frogs in the ponds, Frank, the HUD
-  glyphs, lives and the timer bar; the overlays (title, level complete,
+  glyphs and lives; the overlays (title, level complete,
   game over, paused) are glyphs added to the end of the same chain. The
   rows are background-type sprites (the far bank with its ponds in 4 bpp;
   river, grass and road rows in 1 bpp, two pens each), so nothing is ever
@@ -40,8 +40,8 @@ level 6). Three lives, a timer per frog.
   blue) and mirrored (HFLIP) for the lanes that go left, the bus likewise;
   Frank mirrored and flipped to face the way he hops; his splat drawn scaled
   and shrinking (the original's red X closing in); the title's Frank and
-  the big lettering scaled 2x/3x from small pictures; the timer bar and the
-  boxes are one pixel scaled to size. Objects running off the screen edges
+  the big lettering scaled 2x/3x from small pictures; the boxes are one
+  pixel scaled to size. Objects running off the screen edges
   are clipped by Suzy.
 - **Art** is text files in `art/` turned into sprite data by `./lynx sprite`
   (`tools/mkart.py` generates the logs and the rows, then converts it all).
@@ -67,9 +67,6 @@ Port changes are marked `port:` in the source:
   to speed-1 pixels of overshoot).
 - what you see holds you: the original didn't let Frank stand on a log that
   was partly off the screen (it didn't draw those); Suzy draws them clipped.
-- added: a 60-second timer per frog (a bar at the bottom: green, yellow,
-  red); time out costs a life. The original had no time limit; it is long
-  enough not to change how the game plays.
 - added: pause, a starting level and music on/off on the title, the lanes
   moving behind the title. The high score lasts until power-off (no
   EEPROM).
@@ -98,8 +95,9 @@ then a bot plays: it stops at the start of every game loop
 (`input_update`), reads the lanes (`obj_x`, `lane_*`, `frank_probe`,
 `home_filled`) and searches ahead through the game's own rules for the hops
 that keep Frank alive and take him up, into the free ponds: all four, so
-level 2 (score past 1000). Then PAUSE (nothing moves), the timer (set to 2
-frames: a life lost to time), careless hops to game over, A back to the
-title with the high score kept, and the frame rate. `--shots` rewrites
+level 2 (score past 1000). Then PAUSE (nothing moves), 75 seconds standing
+on the grass with no death (there is no time limit), careless hops to
+game over, A back to the title with the high score kept, and the frame
+rate. `--shots` rewrites
 `images/frank_the_frog.png` and `.gif`; `--debug` prints the bot's last
 moves before each death and every late frame.

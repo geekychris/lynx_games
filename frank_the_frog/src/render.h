@@ -14,6 +14,5 @@ void render_gameover(uint8_t prompt);
 void render_level_done(void);
 void render_paused(void);
 void render_blink(uint8_t off);  /* the PRESS A line on/off */
-extern uint16_t time_left;       /* frames left for this frog */
 extern uint8_t start_level;      /* main.c: the title's starting level */
 #endif
