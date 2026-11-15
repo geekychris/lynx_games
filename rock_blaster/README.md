@@ -7,9 +7,9 @@ more large rocks. Three lives, 100 frames of safety after each respawn
 (the ship blinks), everything wraps around the screen. The original's tune
 plays on two Mikey channels.
 
-![title](../../docs/images/rock_blaster_title.png) ![play](../../docs/images/rock_blaster.png)
+![title](images/rock_blaster_title.png) ![play](images/rock_blaster.png)
 
-![Rock Blaster playing](../../docs/images/rock_blaster.gif)
+![Rock Blaster playing](images/rock_blaster.gif)
 
 ```sh
 ./lynx build rock_blaster            # RELEASE=1: no harness log
@@ -123,8 +123,8 @@ scores of 20, 50 and 100, wave 2, a life lost and the respawn, game over
 with the last score, the new high score, frame rate (50 average, never
 below 40), GAME OVER on screen, A back to the title, and the whole game is
 recorded and replayed with every frame's hash matching.
-`.venv/bin/python projects/rock_blaster/test.py --shots` rewrites the
-pictures in `docs/images`.
+`.venv/bin/python games/rock_blaster/test.py --shots` (in the lynxdev checkout) rewrites the
+pictures in `images/`.
 
 ## Files
 

@@ -6,9 +6,9 @@ far bank. 10 points for each new row, 50 for a pond, 1000 for each level
 (all four ponds); every level the traffic and the river speed up (up to
 level 6). Three lives, a timer per frog.
 
-![Frank the Frog](../../docs/images/frank_the_frog.png)
+![Frank the Frog](images/frank_the_frog.png)
 
-![Frank the Frog playing](../../docs/images/frank_the_frog.gif)
+![Frank the Frog playing](images/frank_the_frog.gif)
 
 ```sh
 ./lynx run frank_the_frog            # in a window
@@ -101,5 +101,5 @@ that keep Frank alive and take him up, into the free ponds: all four, so
 level 2 (score past 1000). Then PAUSE (nothing moves), the timer (set to 2
 frames: a life lost to time), careless hops to game over, A back to the
 title with the high score kept, and the frame rate. `--shots` rewrites
-`docs/images/frank_the_frog.png` and `.gif` (repo root); `--debug` prints the bot's last
+`images/frank_the_frog.png` and `.gif`; `--debug` prints the bot's last
 moves before each death and every late frame.

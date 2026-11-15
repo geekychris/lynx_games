@@ -22,7 +22,8 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(HERE.parents[1] / "tools" / "lynxdev" / "src"))
+ROOT = next((p for p in HERE.parents if (p / "lynx").is_file() and (p / "sdk").is_dir()), HERE.parents[1])
+sys.path.insert(0, str(ROOT / "tools" / "lynxdev" / "src"))
 from lynxdev.sprite import encode  # noqa: E402
 
 SHIP = [(10, 0), (-7, -6), (-4, -2), (-4, 2), (-7, 6)]

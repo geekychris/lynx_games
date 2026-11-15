@@ -9,9 +9,10 @@ the log lines (rb: ...), the score sums (20/50/100 a rock), the frame rate
 from the game's own "rb: fps=" lines, the screen, and that the game is
 deterministic: it is recorded and replayed, every frame hash must match.
 
-    .venv/bin/python projects/rock_blaster/test.py [--shots] [--log]
+    ./lynx test rock_blaster        (from the lynxdev checkout)
+    .venv/bin/python games/rock_blaster/test.py [--shots] [--log]
 
---shots also writes docs/images/rock_blaster.png, rock_blaster_title.png and
+--shots also writes images/rock_blaster.png, rock_blaster_title.png and
 rock_blaster.gif
 (otherwise every picture goes to build/shots).
 """
@@ -21,7 +22,19 @@ import struct
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+def _lynxdev_root() -> Path:
+    """The lynxdev checkout this game is built in (lynx_games is its games/
+    submodule), or $LYNX_ROOT."""
+    import os
+    if os.environ.get("LYNX_ROOT"):
+        return Path(os.environ["LYNX_ROOT"])
+    for p in Path(__file__).resolve().parents:
+        if (p / "lynx").is_file() and (p / "sdk").is_dir():
+            return p
+    raise SystemExit("no lynxdev checkout above this game: run it from lynxdev/games/<game> (or set LYNX_ROOT)")
+
+
+ROOT = _lynxdev_root()
 sys.path.insert(0, str(ROOT / "tools" / "lynxdev" / "src"))
 
 from lynxdev.emu import Emulator  # noqa: E402
@@ -30,7 +43,7 @@ HERE = Path(__file__).resolve().parent
 PROG = HERE / "build" / "rock_blaster.lnx"
 SHOTS = HERE / "build" / "shots"
 SHOTS.mkdir(parents=True, exist_ok=True)
-DOCS = ROOT / "docs" / "images" if "--shots" in sys.argv else SHOTS
+DOCS = Path(__file__).resolve().parent / "images" if "--shots" in sys.argv else SHOTS
 REC = HERE / "build" / "bot-game.json"
 W, H = 320, 204
 failures = []

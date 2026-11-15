@@ -2,14 +2,14 @@
 """Writes the generated art (logs, the background rows) to art/*.txt and
 converts every art/*.txt to src/spr_<name>.c/.h with `./lynx sprite`.
 
-    projects/frank_the_frog/tools/mkart.py      (re-run after editing art/)
+    games/frank_the_frog/tools/mkart.py      (re-run after editing art/; from a lynxdev checkout)
 """
 import subprocess
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parents[1]
-ROOT = HERE.parents[1]
+ROOT = next((p for p in HERE.parents if (p / "lynx").is_file() and (p / "sdk").is_dir()), HERE.parents[1])
 ART = HERE / "art"
 
 

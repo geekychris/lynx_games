@@ -13,7 +13,7 @@
 
 Frame rate: the game counts its loops and the vertical blanks it missed
 (`loop_count`, `late_frames`). Pictures go to build/shots (with --shots also
-docs/images/frank_the_frog.png and .gif in the repo root). --debug prints the bot's last moves
+images/frank_the_frog.png and .gif in this game's directory). --debug prints the bot's last moves
 before each death.
 """
 import re
@@ -21,7 +21,19 @@ import struct
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+def _lynxdev_root() -> Path:
+    """The lynxdev checkout this game is built in (lynx_games is its games/
+    submodule), or $LYNX_ROOT."""
+    import os
+    if os.environ.get("LYNX_ROOT"):
+        return Path(os.environ["LYNX_ROOT"])
+    for p in Path(__file__).resolve().parents:
+        if (p / "lynx").is_file() and (p / "sdk").is_dir():
+            return p
+    raise SystemExit("no lynxdev checkout above this game: run it from lynxdev/games/<game> (or set LYNX_ROOT)")
+
+
+ROOT = _lynxdev_root()
 sys.path.insert(0, str(ROOT / "tools" / "lynxdev" / "src"))
 
 from lynxdev.emu import Emulator  # noqa: E402
@@ -30,7 +42,7 @@ HERE = Path(__file__).resolve().parent
 PROG = HERE / "build" / "frank_the_frog.lnx"
 SHOTS = HERE / "build" / "shots"
 SHOTS.mkdir(parents=True, exist_ok=True)
-DOCS = ROOT / "docs" / "images" if "--shots" in sys.argv else None
+DOCS = Path(__file__).resolve().parent / "images" if "--shots" in sys.argv else None
 DEBUG = "--debug" in sys.argv
 NUM_LANES, MAXOBJ = 10, 3                 # lanes.h, game.h
 HOMES = [40, 120, 216, 280]               # pond centres (lanes.c)
