@@ -6,15 +6,49 @@ for Claude Code). Mostly ports of the Amiga originals in
 [amiga_games](https://github.com/geekychris/amiga_games), redone for
 the Lynx's 160x102 screen with Suzy sprites and Mikey sound.
 
-This repo is lynxdev's `games/` submodule: build and test the games from a
-lynxdev checkout.
+This repo is lynxdev's `games/` submodule: build, play and test the games
+from a lynxdev checkout.
 
-```sh
-git clone --recurse-submodules https://github.com/geekychris/lynxdev && cd lynxdev
-./setup.sh
-./lynx run rock_blaster        # in a window
-./lynx test frank_the_frog     # headless play-through
-```
+## How to play
+
+1. **Install lynxdev** (it brings this repo along as `games/`). While both
+   repos are private you need access to them and the GitHub CLI logged in
+   (`gh auth login`):
+
+   ```sh
+   gh api -H "Accept: application/vnd.github.raw" repos/geekychris/lynxdev/contents/scripts/install.sh | bash
+   ```
+
+   or by hand:
+
+   ```sh
+   git clone --recurse-submodules https://github.com/geekychris/lynxdev && cd lynxdev
+   ./setup.sh
+   ```
+
+   Details, other systems and troubleshooting: lynxdev's
+   [docs/install.md](https://github.com/geekychris/lynxdev/blob/main/docs/install.md).
+
+2. **Open the arcade**, the games menu, from the lynxdev directory:
+
+   ```sh
+   ./lynx arcade
+   ```
+
+   Type a game's number to build it and play it in a window, `i` + number
+   for its controls, `q` to quit. Closing the game's window (Esc) brings
+   you back to the menu.
+
+3. **Keys in the window:** arrows = d-pad, Z or Left Alt = A (outer
+   button), X / Left Ctrl / Cmd = B (inner), 1 / 2 = OPTION 1 / 2, P or
+   Return = PAUSE, Esc closes the window. Each game's README has its
+   controls.
+
+One game straight away: `./lynx run rock_blaster`. A headless play-through
+test: `./lynx test frank_the_frog`.
+
+Already have lynxdev? `git pull && git submodule update --init` in it
+picks up new games.
 
 ## Games
 
@@ -42,6 +76,13 @@ One directory per game at the root:
 `LYNX_SDK ?= ../../sdk` resolves to lynxdev's `sdk/` because the game sits at
 `lynxdev/games/<game>`.
 
+## Writing a game
+
+`./lynx new --game <name>` in lynxdev creates `games/<name>/` from the
+template. lynxdev's [getting-started](https://github.com/geekychris/lynxdev/blob/main/docs/getting-started.md)
+and [game-dev](https://github.com/geekychris/lynxdev/blob/main/docs/game-dev.md)
+docs walk through it; [CLAUDE.md](CLAUDE.md) has the rules for PRs here.
+
 ## Licence
 
-MIT, as lynxdev.
+MIT ([LICENSE](LICENSE)), as lynxdev.
