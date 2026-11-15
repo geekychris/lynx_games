@@ -22,6 +22,7 @@ git clone --recurse-submodules https://github.com/geekychris/lynxdev && cd lynxd
 |---|---|---|
 | <img src="rock_blaster/images/rock_blaster.png" width="160" alt="Rock Blaster"> | [Rock Blaster](rock_blaster) | vector rock shooter: the original's ship, rocks and rules; Suzy sprites (pre-rotated + flipped ship, scaled title logo), the original's tune on Mikey, 50 fps |
 | <img src="frank_the_frog/images/frank_the_frog.png" width="160" alt="Frank the Frog"> | [Frank the Frog](frank_the_frog) | hop Frank over five lanes of traffic and a river of logs and lily pads into the four ponds; Suzy-scaled title, Mikey sound, 50 fps; a bot test fills all four ponds |
+| <img src="nova_defense/images/nova_defense.png" width="160" alt="Nova Defense"> | [Nova Defense](nova_defense) | invaders-style: a staggered swarm of 48 aliens in three kinds, a bonus comet, eroding crystal shields, the march speeding up as the swarm thins; 65 Suzy sprites a frame with an erase pass instead of a clear, the original's march, effects and arpeggio on Mikey, 50 fps |
 
 ## Layout
 
