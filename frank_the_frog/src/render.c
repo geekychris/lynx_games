@@ -5,11 +5,11 @@
  *
  *   HUD strip, 13 rows (background-type sprites: the far bank with its
  *   ponds in 4 bpp, river / grass / road rows in 1 bpp with two pens each,
- *   so nothing needs clearing), the timer strip,
+ *   so nothing needs clearing), the black strip under the field,
  *   30 lane objects (cars recoloured per lane through their pen palette,
  *   flipped for the lanes that go left; buses, logs, lily-pad rafts),
  *   the frogs in the ponds, Frank (or his splat, scaled), the HUD glyphs
- *   (a 3x5 font), lives and the timer bar (one pixel scaled to its length).
+ *   (a 3x5 font) and lives.
  *
  * Objects hanging off the screen edges are clipped by Suzy.
  */
@@ -43,8 +43,6 @@ static const uint16_t palette[16] = {
     0x000, 0x1A1, 0x555, 0x23C, 0x4E3, 0x060, 0x952, 0xE22,
     0xFD1, 0x37F, 0xB4D, 0x0A4, 0xAF6, 0xFFF, 0x8DF, 0x000 };
 
-uint16_t time_left;
-
 /* ------------------------------------------------------------- the SCBs */
 
 #define G_SCORE 5                /* glyph indexes: SCORE + 6 digits ... */
@@ -53,10 +51,10 @@ uint16_t time_left;
 #define NUM_GLYPHS 23
 #define MAX_LIVES 5
 
-static SCB_REHV_PAL hud_bg, rows[GRID_ROWS], timer_bg;
+static SCB_REHV_PAL hud_bg, rows[GRID_ROWS], bottom_bg;
 static SCB_REHV_PAL objs[NUM_OBJS];
 static SCB_REHV_PAL homes[NUM_HOMES], frog, splat;
-static SCB_REHV_PAL glyphs[NUM_GLYPHS], lives[MAX_LIVES], timer_bar;
+static SCB_REHV_PAL glyphs[NUM_GLYPHS], lives[MAX_LIVES];
 static SCB_REHV_PAL big_frog;    /* the title */
 #define MAX_TXT 72
 static SCB_REHV_PAL box_in, box_t, box_b, box_l, box_r, txt[MAX_TXT];
@@ -106,14 +104,13 @@ static void link_all(void)
     uint8_t i;
 #define LINK(s) (spr_link(prev, (s)), prev = (s))
     for (i = 0; i < GRID_ROWS; ++i) LINK(&rows[i]);
-    LINK(&timer_bg);
+    LINK(&bottom_bg);
     for (i = 0; i < NUM_OBJS; ++i) LINK(&objs[i]);
     for (i = 0; i < NUM_HOMES; ++i) LINK(&homes[i]);
     LINK(&frog);
     LINK(&splat);
     for (i = 0; i < NUM_GLYPHS; ++i) LINK(&glyphs[i]);
     for (i = 0; i < MAX_LIVES; ++i) LINK(&lives[i]);
-    LINK(&timer_bar);
     LINK(&big_frog);
 #undef LINK
     txt_link();
@@ -126,7 +123,7 @@ void render_init(void)
     gfx_palette(palette);
 
     bar(&hud_bg, 0, 0, 160, HUD_H, C_BLACK);
-    bar(&timer_bg, 0, TIMER_Y - 1, 160, LYNX_SCREEN_H - TIMER_Y + 1, C_BLACK);
+    bar(&bottom_bg, 0, BOTTOM_Y, 160, LYNX_SCREEN_H - BOTTOM_Y, C_BLACK);
     bg_sprite(&rows[ROW_HOME], home_data, HOME_BPP, ROW_Y(ROW_HOME));
     for (r = ROW_RIVER_5; r <= ROW_RIVER_1; ++r) {
         bg_sprite(&rows[r], water_data, WATER_BPP, ROW_Y(r));
@@ -170,7 +167,6 @@ void render_init(void)
         spr_init(&lives[i], life_data, LIFE_BPP);
         spr_pos(&lives[i], 116 + 7 * i, 1);
     }
-    bar(&timer_bar, 0, TIMER_Y, 160, 3, C_FROG);
     bar(&box_in, 4, 0, 1, 1, C_BLACK);
     bar(&box_t, 4, 0, 152, 1, C_WHITE);
     bar(&box_b, 4, 0, 152, 1, C_WHITE);
@@ -221,12 +217,12 @@ static uint8_t last_lives = 0xFF;
 
 void render_frame(uint8_t state)
 {
-    uint8_t l, i, n;
+    uint8_t i;
     int16_t x;
-    SCB_REHV_PAL *s;
 
     /* lane objects (the unused ones are hidden); in asm, the C is: */
 #if 0
+    SCB_REHV_PAL *s;
     for (i = 0; i < NUM_OBJS; ++i) {
         s = obj_scb[i];
         s->hpos = HALF(obj_x[i]) + obj_off[i];
@@ -267,14 +263,6 @@ void render_frame(uint8_t state)
         last_lives = score_lives;
         for (i = 0; i < MAX_LIVES; ++i) spr_hide(&lives[i], i >= score_lives);
     }
-
-    /* the timer bar: 160 pixels for TIME_LIMIT frames */
-    s = &timer_bar;
-    n = (uint8_t)(time_left * 16u / (TIME_LIMIT / 10));
-    s->hsize = (uint16_t)n << 8;
-    spr_hide(s, n == 0 || state == STATE_TITLE || state == STATE_GAMEOVER);
-    l = n > 53 ? C_FROG : n > 26 ? C_YELLOW : C_RED;
-    two_pens(s, 0, l);
 
     spr_draw(&hud_bg);
 }

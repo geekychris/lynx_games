@@ -2,7 +2,7 @@
  * Frank the Frog - sound. The original builds sampled effects for Paula
  * (hop blip, splat crunch, splash, home jingle, level-up fanfare, game-over
  * fall) and plays a MOD. Here: Mikey's four channels.
- *   0  hop / time-out sweeps   1  noise (splat, splash)
+ *   0  hop sweep              1  noise (splat, splash)
  *   2  jingles (home, level, game over: note lists)
  *   3  the riff (the original tune's E-F chromatic bass, as in the a8 port)
  *
@@ -109,7 +109,6 @@ void sound(uint8_t s)
     case S_HOME:   jingle(jingle_home); break;
     case S_LEVEL:  jingle(jingle_level); break;
     case S_OVER:   jingle(jingle_over); break;
-    case S_TIME:   tone(0, PER(300), 90, 3, 2); break;       /* falling */
     }
 }
 

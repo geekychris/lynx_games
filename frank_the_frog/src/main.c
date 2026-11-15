@@ -4,7 +4,7 @@
  * game_tick() is the original main loop's state machine (main.c), with the
  * original's rules in lanes.c, frank.c and score.c (shared with the a8dev
  * port). This file adds the Lynx front end: the title over the moving
- * lanes, the timer, pause, Mikey sound and the log lines the test reads.
+ * lanes, pause, Mikey sound and the log lines the test reads.
  * Port changes are marked "port:".
  */
 #include <string.h>
@@ -66,11 +66,9 @@ static void die(const char *why, uint8_t snd)
     sound(snd);
 }
 
-/* port: the timer restarts with every frog */
 static void new_frog(void)
 {
     frank_init();
-    time_left = TIME_LIMIT;
 }
 
 static void new_game(void)
@@ -148,8 +146,6 @@ static void game_tick(int8_t joy_dx, int8_t joy_dy, uint8_t fire_pressed)
             }
         }
 
-        /* port (added): out of time */
-        if (game_state == STATE_PLAYING && --time_left == 0) die("time", S_TIME);
         break;
 
     case STATE_DYING:

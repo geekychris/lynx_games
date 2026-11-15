@@ -7,8 +7,8 @@
    `home_filled`, by symbol) and hops when the next lane is safe: across the
    road, onto logs and rafts, into a free pond. Until all four ponds are
    filled (level 2).
-4. PAUSE freezes the game; the timer runs out when it is set to 2 frames
-   (`time_left`): a life lost to time.
+4. PAUSE freezes the game. No time limit (the original has none): Frank
+   waits on the grass for 75 seconds and nothing happens to him.
 5. Plays carelessly until the game is over, A returns to the title.
 
 Frame rate: the game counts its loops and the vertical blanks it missed
@@ -304,7 +304,7 @@ with Emulator() as e:
     if DOCS:
         e.screenshot(DOCS / "frank_the_frog.png", scale=3)
 
-    # 4. pause, then the timer
+    # 4. pause, then no time limit
     e.press("PAUSE")
     check("PAUSE pauses", e.run_until("frank: paused", 10))
     probe = e.read_mem("frank_probe", 6)
@@ -315,11 +315,17 @@ with Emulator() as e:
     e.screenshot(SHOTS / "paused.png", scale=3)
     e.press("PAUSE")
     check("PAUSE again resumes", e.run_until("frank: resumed", 10))
+    e.run_until("frank: state=playing", 200)     # (the bot's last hop may still land in the river)
     lives = e.peek("score_lives")
-    e.run_until("frank: state=playing", 200)
-    e.write_mem("time_left", struct.pack("<H", 2))
-    check("the timer runs out: death time", e.run_until("death time", 10))
-    check("... and costs a life", e.run_until(f"frank: lives={lives - 1}", 60) or lives == 1)
+    row = e.peek16(e.addr("frank_probe") + 2)
+    e.log()
+    f0 = e.frame()
+    e.run(75 * HZ)
+    ran = e.frame() - f0
+    idle = e.log()
+    check("no time limit: 75 s idle on the grass, no death",
+          ran >= 75 * HZ and row in (6, 12) and "death" not in idle and e.peek("score_lives") == lives
+          and e.peek16(e.addr("frank_probe") + 2) == row, f"frames={ran} row={row} lives={lives} log={idle[-200:]!r}")
 
     # 5. careless to the end
     e.run_until("frank: state=playing", 200)
@@ -327,7 +333,7 @@ with Emulator() as e:
     log = bot(e, "state=gameover", careless=True)
     check("game over", "state=gameover" in log)
     deaths = re.findall(r"death (\w+)", log)
-    check("deaths by traffic or water", deaths and set(deaths) <= {"splat", "splash", "carried", "bank", "time"},
+    check("deaths by traffic or water", deaths and set(deaths) <= {"splat", "splash", "carried", "bank"},
           str(deaths))
     m = re.search(r"gameover score=(\d+)", log)
     final = int(m.group(1)) if m else 0
