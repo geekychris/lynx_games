@@ -1,0 +1,104 @@
+# Orb Hunter tiles, 8x6: the original's 16x16 draw_tile designs at x / 2,
+# y * 3 / 8. Every pixel is drawn: A is the background colour (palette entry
+# 10, the original's black again; see render.c), so a tile repaints its whole
+# cell. Pens = the original's palette: 1 white, 4 rock, 5 rock2, 6 metal,
+# 7 metal2, 8 lava, 9 lava2, D door, E item (cyan), F beam (green).
+# 0 empty (and an opened door)
+AAAAAAAA
+AAAAAAAA
+AAAAAAAA
+AAAAAAAA
+AAAAAAAA
+AAAAAAAA
+
+# 1 rock: green with lighter dots
+45444445
+44444544
+54544444
+44444454
+44454444
+44445444
+
+# 2 brick: mortar lines, offset joints
+44454444
+44454444
+55555555
+44444445
+44444445
+55555555
+
+# 3 metal: a panel, light top and left edges, dark right and bottom
+7777777A
+7666666A
+7666666A
+7666666A
+7666666A
+AAAAAAAA
+
+# 4 platform: a thin ledge at the top
+44444444
+55555555
+AAAAAAAA
+AAAAAAAA
+AAAAAAAA
+AAAAAAAA
+
+# 5-8 lava, the wave on its surface in four phases
+99AA99AA
+88888888
+88988888
+88888888
+88888898
+88888888
+
+A99AA99A
+88888888
+88889888
+88888888
+89888888
+88888888
+
+AA99AA99
+88888888
+88888898
+88888888
+88898888
+88888888
+
+9AA99AA9
+88888888
+89888888
+88888888
+88888988
+88888888
+
+# 9 locked door: blue bars
+ADAADAAD
+ADDDDDDD
+ADAADAAD
+ADAADAAD
+ADDDDDDD
+ADAADAAD
+
+# 10 item block (the original has the tile but no room uses it)
+77777777
+7EEEEEE7
+7EE11EE7
+7EE11EE7
+7EEEEEE7
+77777777
+
+# 11-12 save point, flashing cyan / green with its S
+AAE11EAA
+AAE1EEAA
+AAE11EAA
+AAEE1EAA
+AAE11EAA
+AAAAAAAA
+
+AAF11FAA
+AAF1FFAA
+AAF11FAA
+AAFF1FAA
+AAF11FAA
+AAAAAAAA
