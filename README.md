@@ -24,6 +24,7 @@ git clone --recurse-submodules https://github.com/geekychris/lynxdev && cd lynxd
 | <img src="frank_the_frog/images/frank_the_frog.png" width="160" alt="Frank the Frog"> | [Frank the Frog](frank_the_frog) | hop Frank over five lanes of traffic and a river of logs and lily pads into the four ponds; Suzy-scaled title, Mikey sound, 50 fps; a bot test fills all four ponds |
 | <img src="nova_defense/images/nova_defense.png" width="160" alt="Nova Defense"> | [Nova Defense](nova_defense) | invaders-style: a staggered swarm of 48 aliens in three kinds, a bonus comet, eroding crystal shields, the march speeding up as the swarm thins; 65 Suzy sprites a frame with an erase pass instead of a clear, the original's march, effects and arpeggio on Mikey, 50 fps |
 | <img src="bullion_dash/images/bullion_dash.png" width="160" alt="Bullion Dash"> | [Bullion Dash](bullion_dash) | dig traps, take the gold, climb out: all 150 repaired levels on one 160x102 screen (5x6 tiles), the original's fixed guards and path search, its four-channel tune on Mikey; bot tests win levels by route search |
+| <img src="jump_quest/images/jump_quest.png" width="160" alt="Jump Quest"> | [Jump Quest](jump_quest) | RJ and Dale's side-scrolling platformer: the original's physics, enemies, items and three levels, all 14 rows on screen; tiles scrolled with Suzy's HOFF, the original's tune on Mikey, 46-50 fps; a bot game and the solver's routes through all three levels |
 
 ## Layout
 
