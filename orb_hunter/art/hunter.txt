@@ -1,0 +1,8 @@
+# The hunter standing, facing right (flipped for left): 8x6, the original's
+# 14x16 at x / 2, y * 3 / 8. 2 teal suit, 3 yellow visor, chest, cannon tip, boots.
+.22233..
+2222222.
+22332223
+.22..22.
+.22..22.
+333.333.

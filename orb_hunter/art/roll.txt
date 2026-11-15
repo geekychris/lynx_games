@@ -1,0 +1,16 @@
+# Roll form: the 8x8 ball at 4x3, its yellow mark going round (4 frames)
+.32.
+2222
+.22.
+
+.22.
+2223
+.22.
+
+.22.
+2222
+.23.
+
+.22.
+3222
+.22.

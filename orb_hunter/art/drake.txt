@@ -1,0 +1,20 @@
+# The drake (boss), 20x24 -> 10x9, wings up and down
+CC...BBBB.
+CCC..B8BBB
+CCC..BBBBB
+..BBBBBBB.
+..BBBBBB..
+..BBBBBB..
+.BBBBBBB..
+BBBB..BB..
+CC.CC.CC..
+
+.....BBBB.
+.....B8BBB
+.....BBBBB
+CCCBBBBBB.
+CCCBBBBB..
+CCBBBBBB..
+.BBBBBBB..
+BBBB..BB..
+CC.CC.CC..
