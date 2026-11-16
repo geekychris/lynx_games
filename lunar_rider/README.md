@@ -56,7 +56,6 @@ index for index.
 
 Kept from the original even where it looks odd:
 
-- HI shows the current score (the original has no high score).
 - After a death the buggy respawns where it died.
 - Rocks and mines are one pixel of terrain, so at speed the buggy often
   steps over them.
@@ -80,6 +79,11 @@ Bugs in the original, fixed here and reported:
 - **the mountains** no longer jump every 2560 pixels: the original wrapped
   their parallax offsets at 640. A mine is drawn all the time; the
   original's dotted pattern hid a one-pixel mine on half of the columns.
+- **HI** is the session's high score (kept from game to game until the
+  Lynx is switched off). The original showed the current score there as a
+  placeholder.
+
+The original has these fixes too now (amiga_games #52).
 
 For the Lynx:
 
@@ -153,6 +157,8 @@ For the Lynx:
 4. It stops jumping and the three lives go: causes logged, lives 3, 2, 1,
    two respawns.
 5. GAME OVER stays while A is held; a new press goes back to the title.
+   GAME OVER logs HI = the score; a second game starts at 0 with HI still
+   the first game's score, drawn in the HUD.
 6. The test checks that every score line adds up, and the frame rate
    (5 windows of 100 frames, all 50 fps).
 7. The game is replayed: every frame hash must match.

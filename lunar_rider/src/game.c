@@ -50,6 +50,7 @@ int16_t  ex_x[MAX_EXPLOSIONS], ex_y[MAX_EXPLOSIONS];
 uint8_t  ex_radius[MAX_EXPLOSIONS], ex_life[MAX_EXPLOSIONS], ex_active[MAX_EXPLOSIONS];
 
 uint16_t score_h;
+uint16_t hi_h;          /* port: original bug fixed (amiga_games #52): HI showed the score */
 uint8_t  lives, state, state_timer;
 uint16_t frame;
 uint8_t  checkpoint_cur;
@@ -636,4 +637,8 @@ void game_update(uint8_t inp)
         /* Handled in main loop */
         break;
     }
+
+    /* the session's high score (the original's fix: its HI showed the
+       current score as a placeholder) */
+    if (score_h > hi_h) hi_h = score_h;
 }
