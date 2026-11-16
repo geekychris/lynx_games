@@ -1,13 +1,13 @@
 """Miner Meteor (Lynx) - plays the game through the harness.
 
 1. The title, then a bot game (recorded from reset): the bot follows the
-   ZX Spectrum port's solver route through cavern 1 (keys, the exit opening,
+   route through cavern 1 from tools/routes.json (keys, the exit opening,
    the cavern bonus); in cavern 2 PAUSE stops the game; then the miner walks
    into the spikes until the game is over (a life lost each time), GAME
    OVER, and A goes back to the title. The recording is replayed: every
    frame hash must match.
-2. The routes through all six caverns (tools/routes.json, found by a search
-   over the same game logic, which test 1 of the a8dev port also plays):
+2. The routes through all six caverns (tools/routes.json, found by
+   tools/routes.sh search over this port's game logic built for the host):
    each cavern cleared without a death, its score the original's rule
    (100 a key, 1000 a cavern plus half the air left), ALL CAVERNS CLEARED,
    and the frame rate from the game's own "mm: fps=" lines.

@@ -10,7 +10,9 @@
  *                 tile in one step - the original's behaviour)
  *   plat_move_y   vy += gravity (clamped to max_fall); y += vy; falling onto
  *                 a solid tile (columns x+1 and x+bw-2) snaps the feet to
- *                 the tile top, vy = 0, on_ground = 1; hitting a ceiling
+ *                 that tile's top, vy = 0, on_ground = 1 (fix: the original
+ *                 put the body on the row under its old top, which could
+ *                 be a tile above the floor: a bob); hitting a ceiling
  *                 snaps y to its tile and sets vy = 1
  *
  * Positions are pixels (int16), tiles are 1 << plat_shift pixels, the map
