@@ -116,6 +116,7 @@ extern int16_t  ex_x[MAX_EXPLOSIONS], ex_y[MAX_EXPLOSIONS];
 extern uint8_t  ex_radius[MAX_EXPLOSIONS], ex_life[MAX_EXPLOSIONS], ex_active[MAX_EXPLOSIONS];
 
 extern uint16_t score_h;                /* the score in hundreds (every score is) */
+extern uint16_t hi_h;                   /* the session's high score, hundreds (game_init keeps it) */
 extern uint8_t  lives, state, state_timer;
 extern uint16_t frame;
 extern uint8_t  checkpoint_cur;         /* current checkpoint letter (0=A) */

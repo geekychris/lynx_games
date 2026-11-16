@@ -260,7 +260,7 @@ static void make_score_str(void)
     score_str[k] = 0;
 }
 
-static uint16_t hud_score = 0xFFFF;
+static uint16_t hud_score = 0xFFFF, hud_hi = 0xFFFF;
 static uint8_t hud_lives = 0xFF, hud_zone = 0xFF, hud_bar = 0xFF;
 
 /* returns 1 when the score, lives or zone changed */
@@ -275,8 +275,13 @@ static uint8_t hud_update(void)
         hud_score = score_h;
         make_score_str();
         hud_set(H_SCORE, 7, score_str);
-        /* port: as the original, HI shows the current score (its
-           "placeholder"; it keeps no high score) */
+    }
+    /* HI: the session's high score (port: original bug, fixed in the
+       original too: it showed the current score as a "placeholder").
+       hi_h only changes by becoming score_h, so its digits are score_str */
+    if (hi_h != hud_hi) {
+        ch = 1;
+        hud_hi = hi_h;
         hud_set(H_HI, 7, score_str);
     }
     if (lives != hud_lives) {
@@ -673,6 +678,9 @@ int main(void)
                     lynx_log_s("lr: gameover");
                     log_score();
                     logb(" zone=", checkpoint_cur + 1);
+                    lynx_log_s(" hi=");
+                    lynx_log_u(hi_h);
+                    if (hi_h) lynx_log_s("00");
                     lynx_log_c('\n');
                     break;
                 case STATE_TITLE:

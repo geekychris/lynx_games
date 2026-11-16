@@ -203,6 +203,21 @@ with Emulator() as e:
     rec = e.record_input("save", REC)
     print(f"  recorded {rec['frames']} frames, {rec['events']} input changes")
 
+    # HI: the session's high score (the original showed the current score)
+    hi = re.search(r"lr: gameover score=\d+ zone=\d+ hi=(\d+)", log)
+    check("GAME OVER: HI = the score (the first game)", hi is not None and int(hi.group(1)) == final,
+          hi and hi.group(0))
+    e.press("A", hold_frames=4)
+    check("a second game", e.run_until("lr: state=playing", 30))
+    e.run(10)
+    hi_h = struct.unpack("<H", e.read_mem("hi_h", 2))[0]
+    check("a new game: score 0, HI keeps the last game's score",
+          e.read_mem("score_h", 2) == b"\0\0" and hi_h * 100 == final, f"hi_h={hi_h} final={final}")
+    e.screenshot(SHOTS / "hiscore.png", scale=3)
+    small = e.screenshot(None)
+    # the HI digits (x 132..159, y 1..6) are drawn, the score's are a single 0
+    check("HI drawn in the HUD", final <= 0 or len(colours(small, 140, 160, 0, 7)) > 1)
+
 with Emulator() as e:
     r = e.replay(REC)
     check("replay: every frame hash matches the recorded game", r["ok"],
