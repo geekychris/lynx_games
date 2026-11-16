@@ -264,7 +264,7 @@ static void draw_play(void)
         emit_obj(art_guard[c][(G->frame >> 2) & 7], G->x >> 1, sy_of(G->y));
     }
     if (!p->b.on_ground) a = p->b.vy < 0 ? art_player_jump : art_player_fall;
-    else a = art_player[p->facing][p->frame & 3];
+    else a = art_player[p->facing][p->frame & 7];
     emit_obj(a, p->b.x >> 1, sy_of(p->b.y));
 
     n_sprites = (uint8_t)(bp - pool);

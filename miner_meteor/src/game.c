@@ -163,7 +163,9 @@ static void update_player(uint8_t input)
     plat_move_y(&p->b, GRAVITY, MAX_FALL_SPEED);
 
     /* Animation frame - every 6 ticks, when actually moving. */
-    if (p->b.vx != 0 && gs.phase6 == 0) p->frame = (p->frame + 1) & 3;
+    /* the original's fix (amiga_games #53): wraps at 8, the sheet's 8 walk
+       frames (it wrapped & 3, so frames 4-7 never showed) */
+    if (p->b.vx != 0 && gs.phase6 == 0) p->frame = (p->frame + 1) & 7;
 
     /* Collectibles + hazard tiles at the player's centre. */
     cx = p->b.x + 8;

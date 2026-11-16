@@ -51,7 +51,7 @@ BLACK2 = 13            # port: a drawable black (see above)
 TILES = [("empty", 0, 0), ("solid_a", 0, 1), ("solid_b", 0, 2), ("collapse", 0, 3),
          ("conv_l", 0, 4), ("conv_r", 0, 5), ("hazard", 0, 6), ("key", 0, 7),
          ("exit_locked", 1, 0), ("exit_open", 1, 1)]
-SPRITES = ([(f"player_r{i}", 2, i) for i in range(4)] + [(f"player_l{i}", 3, i) for i in range(4)]
+SPRITES = ([(f"player_r{i}", 2, i) for i in range(8)] + [(f"player_l{i}", 3, i) for i in range(8)]
            + [("player_jump", 4, 0), ("player_fall", 4, 1)]
            + [(f"guard_{g}{i}", 5 + k, i) for k, g in enumerate("abc") for i in range(8)])
 SHEET = HERE / "art" / "sheet16.txt"
@@ -149,9 +149,9 @@ def main():
         data = encode(g, 4)
         c.append(f"const unsigned char art_{name}[{len(data)}] = {{ " + ", ".join("0x%02X" % b for b in data) + " };")
     c.append("")
-    c.append("const unsigned char * const art_player[2][4] = {")
+    c.append("const unsigned char * const art_player[2][8] = {")
     for d in "lr":
-        c.append("    { " + ", ".join(f"art_player_{d}{i}" for i in range(4)) + " },")
+        c.append("    { " + ", ".join(f"art_player_{d}{i}" for i in range(8)) + " },")
     c.append("};")
     c.append("const unsigned char * const art_guard[3][8] = {")
     for g in "abc":
@@ -167,7 +167,7 @@ def main():
          "/* 8 x 7 pictures, 4 bpp literal; tiles: pen 0 where the original is black */"]
     for name, g in shr.items():
         h.append(f"extern const unsigned char art_{name}[{len(encode(g, 4))}];")
-    h += ["extern const unsigned char * const art_player[2][4];   /* [facing][walk frame] */",
+    h += ["extern const unsigned char * const art_player[2][8];   /* [facing][walk frame] */",
           "extern const unsigned char * const art_guard[3][8];    /* [colour 4/5/6][frame] */",
           "extern const uint16_t art_palette[16];                 /* 0xRGB: the original's, 13 = black */",
           f"#define COL_BLACK2 {BLACK2}", "", "#endif"]

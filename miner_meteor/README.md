@@ -34,7 +34,8 @@ one `GameState`), taken unchanged from the Atari 8-bit port (a8dev
 `projects/miner_meteor`, itself the ZX Spectrum port's), with
 `src/plat.c`/`tmap.c` holding the original's `update_player` collision code
 and `src/levels.txt` its six caverns row for row (with the three rows the
-original fixed). Gravity, the jump and its edge trigger, walk and conveyor
+original fixed, and the original's later fixes: Hazard Bay's right wall
+closed, Guardian Alley's first guardian on its ledge, amiga_games #53). Gravity, the jump and its edge trigger, walk and conveyor
 speeds, the collision snaps, the 18-tick crumbling floors, the guardians'
 patrols and hit boxes, the air draining one unit every 6 ticks, the
 scoring, three lives and the 60 / 150 / 200-tick screens are the original's.
@@ -44,10 +45,15 @@ The proof that it plays the same: the Spectrum port's solver found the
 fastest route through each cavern over this logic (`tools/routes.json`);
 test.py feeds the routes in through the pad and all six caverns are
 cleared without a death, each in exactly the route's number of ticks.
+Guardian Alley's route (259 ticks) is the Atari ST port's
+(`atari_st_games/miner_meteor/tools/route_search.cpp`): the solver's
+211-tick route was made for the guardian inside the ledge and loses a life
+with it on top.
 
 The screens follow `render.cpp`: the tiles and sprites come from the
 original's tile sheet (its baked `tilesheet_data.cpp`, `art/sheet16.txt`),
-with its palette; the miner's walk frames by direction, its jump and fall
+with its palette; the miner's 8 walk frames by direction (the original's fix: it showed
+only the first 4), its jump and fall
 poses, the guardians' 8-frame animations in three colours, the collapsing
 floor darkening in the second half of its timer, the exit blinking open
 every 6 ticks once the last key is taken. The HUD has the original's
@@ -94,8 +100,8 @@ end screens have its text and colours.
   after a death) takes two frames, one tick a frame late. Over the six
   caverns: 49.9 fps in a release build (5 late frames in 2,323), 49-50 in
   the harness build.
-- Memory: program, data and BSS end at `$9724` (of `$B837`); the release
-  cartridge is 26.9 KB.
+- Memory: program, data and BSS end at `$988D` (of `$B837`); the release
+  cartridge is 27.3 KB.
 
 ## Test
 

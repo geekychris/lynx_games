@@ -19,10 +19,18 @@ extern const unsigned char art_player_r0[43];
 extern const unsigned char art_player_r1[43];
 extern const unsigned char art_player_r2[43];
 extern const unsigned char art_player_r3[43];
+extern const unsigned char art_player_r4[43];
+extern const unsigned char art_player_r5[43];
+extern const unsigned char art_player_r6[43];
+extern const unsigned char art_player_r7[43];
 extern const unsigned char art_player_l0[43];
 extern const unsigned char art_player_l1[43];
 extern const unsigned char art_player_l2[43];
 extern const unsigned char art_player_l3[43];
+extern const unsigned char art_player_l4[43];
+extern const unsigned char art_player_l5[43];
+extern const unsigned char art_player_l6[43];
+extern const unsigned char art_player_l7[43];
 extern const unsigned char art_player_jump[43];
 extern const unsigned char art_player_fall[43];
 extern const unsigned char art_guard_a0[43];
@@ -50,7 +58,7 @@ extern const unsigned char art_guard_c5[43];
 extern const unsigned char art_guard_c6[43];
 extern const unsigned char art_guard_c7[43];
 extern const unsigned char art_black[43];
-extern const unsigned char * const art_player[2][4];   /* [facing][walk frame] */
+extern const unsigned char * const art_player[2][8];   /* [facing][walk frame] */
 extern const unsigned char * const art_guard[3][8];    /* [colour 4/5/6][frame] */
 extern const uint16_t art_palette[16];                 /* 0xRGB: the original's, 13 = black */
 #define COL_BLACK2 13
