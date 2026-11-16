@@ -177,21 +177,27 @@ static void tick(uint16_t held, uint16_t pressed)
         break;
 
     case STATE_ITEM_GET:
-        /* port: original bug: the box closes on fire held, so the shot that
-           was firing as the hunter touched the orb closes it at once (and
-           game.c's 90-frame timer is never used: the loop doesn't call
-           game_update here); here it waits for a press */
-        if (pressed & (IN_A | IN_B)) {
-            gs.state = STATE_PLAYING;
-            render_room();
-        }
+        /* port: original bug (fixed in amiga_games #50): the box closed on
+           fire held, so the shot that was firing as the hunter touched the
+           orb closed it at once, and game.c's 90-frame timer was never used
+           (the loop didn't call game_update here). Here, as in the fixed
+           original, it closes on a press or after the 90 frames */
+        game_update(0, 0, 0, 0, 0, 0);
+        if (pressed & (IN_A | IN_B)) gs.state = STATE_PLAYING;
+        if (gs.state == STATE_PLAYING) render_room();
         break;
 
     case STATE_GAMEOVER:
-        if (pressed & (IN_A | IN_B)) to_title();      /* (a press: see the title) */
+        /* a press (see the title), or game.c's 180-frame timer (the fixed
+           original runs it; it never called game_update here) */
+        game_update(0, 0, 0, 0, 0, 0);
+        if (gs.state == STATE_TITLE || (pressed & (IN_A | IN_B))) to_title();
         break;
     }
-    gs.frame++;                     /* the original's loop counts too (main.c) */
+    /* port: original bug (fixed in amiga_games #50): its loop counted
+       gs.frame too, twice a loop with game_update's, so its drawing always
+       saw it odd: the creatures were never drawn and the invulnerable hunter
+       vanished. game_update's count alone now, as in the fixed original */
     watch(prev);
 }
 

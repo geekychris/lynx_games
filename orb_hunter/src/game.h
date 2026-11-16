@@ -112,6 +112,8 @@ extern uint8_t e_type[MAX_ENEMIES], e_on[MAX_ENEMIES], e_facing[MAX_ENEMIES], e_
                e_anim_frame[MAX_ENEMIES];
 extern int8_t e_health[MAX_ENEMIES];
 extern WORD e_timer[MAX_ENEMIES], e_fire_timer[MAX_ENEMIES];
+#define HIT_FLASH_FRAMES    8     /* a creature flashes this long when hit */
+extern uint8_t e_hit_timer[MAX_ENEMIES];   /* frames left of its hit flash (render.c) */
 
 extern Fixed eb_x[MAX_ENEMY_BULLETS], eb_y[MAX_ENEMY_BULLETS], eb_dx[MAX_ENEMY_BULLETS], eb_dy[MAX_ENEMY_BULLETS];
 extern uint8_t eb_life[MAX_ENEMY_BULLETS], eb_on[MAX_ENEMY_BULLETS];

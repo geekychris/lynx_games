@@ -57,21 +57,35 @@ for music.
 
 ## What changed (marked `port:` in the source)
 
-Bugs in the original, fixed here (reported for amiga_games):
+Bugs in the original, fixed here (amiga_games #50 fixed them in the
+original too; this port follows the fixed original):
 
-- **The creatures were never drawn.** The original's frame counter goes up
-  twice a loop, so its drawing always sees it odd, and its "flash when hit"
-  test (`e->timer > 0 && (g_frame & 1)`; every creature's timer runs) hides
-  every creature, turret and boss: only their shots show. The same test hid
-  the hunter for all of his invulnerability instead of flickering. Here the
-  creatures are always drawn and the hunter flickers.
-- **Fire held, not pressed**: the title, the item box and GAME OVER react
-  to the fire button being down, so the shot that was firing when the hunter
-  touched an orb closes its box at once, and fire held through GAME OVER
-  starts the next game. Here they wait for a press.
+- **The creatures were never drawn.** The original's frame counter went up
+  twice a loop, so its drawing always saw it odd, and its "flash when hit"
+  test (`e->timer > 0 && (g_frame & 1)`; every creature's AI timer runs)
+  hid every creature, turret and boss: only their shots showed. The same
+  test hid the hunter for all of his invulnerability. Here the counter goes
+  up once a tick (the animations run at the rates their divisors were
+  written for), a creature flashes for 8 frames when a shot or a bomb hits
+  it (its own hit timer), and the invulnerable hunter flickers every other
+  frame.
+- **Fire held, not pressed**: the title, the item box and GAME OVER reacted
+  to the fire button being down, so the shot that was firing when the
+  hunter touched an orb closed its box at once, and fire held through GAME
+  OVER started the next game. Here they wait for a press; and as in the
+  fixed original, the item box closes by itself after 90 frames and GAME
+  OVER goes back to the title after 180 (game.c's timers, which the
+  original never ran).
 - **The title's controls** said "START - MISSILE MODE"; a rocket is up +
   fire and START does nothing in play. Here: "UP+A - ROCKET".
-- **The score** is kept but never shown; GAME OVER shows it here.
+- **The score** was kept but never shown. Here it is in the HUD, right of
+  the area's name (the original's fix put it on its HUD's second line,
+  where a leftover debug line was; the Lynx HUD has one line, so "WYRM
+  HOLLOW" is shortened to "W. HOLLOW" to make room), and on GAME OVER. A new
+  score is drawn in a quiet frame (fewer than 8 sprites, within 2 s): drawn
+  among a kill's sparks it made a frame late.
+- **The citadel's creatures** were spawned on row 13, inside its three-row
+  floor; here on row 12, on it.
 
 Left as the original has them:
 
@@ -82,8 +96,9 @@ Left as the original has them:
   open (levels.c builds walls only where there is no neighbour), so the
   beast's den can be walked into along the floor.
 - The area names go by the room's row ("BEAST DEN" in the start room), the
-  save point does nothing, the citadel's creatures stand inside its floor,
-  the frost ray is the beam with power 2.
+  save point does nothing, the frost ray is the beam with power 2.
+- (The original's joystick decoding fix doesn't apply: the Lynx reads its
+  joypad through the SDK.)
 
 The Lynx version:
 
@@ -110,8 +125,7 @@ The Lynx version:
   same shape and priority (a falling blip for a shot, a rising one for a
   jump, the item's three notes, the door's sweep, noise bursts).
 - **PAUSE** (the original has none; Esc quit it).
-- Not ported: the debug line in the original's HUD (the hunter's y, the
-  room), the bridge hooks (the test gives the power-ups by writing the
+- Not ported: the bridge hooks (the test gives the power-ups by writing the
   variables its `give_items` hook sets), the keyboard.
 
 ## Speed
@@ -128,7 +142,7 @@ the rules catch up afterwards (at most 3 steps a frame), so they run at
 The hot loops are 6502 (`src/render_asm.s`): the tile pool and repaint
 list, the cells an object covers, the sparks (from ~3,500 cycles an
 object in C to a few hundred), and the tile tests at a pixel (`src/props.s`,
-the Atari port's). Memory: program, data and BSS end at `$A978`.
+the Atari port's). Memory: program, data and BSS end at `$AC5C`.
 
 ## Test
 
@@ -148,5 +162,10 @@ the Atari port's). Memory: program, data and BSS end at `$A978`.
    A lays a bomb that blows and pushes the hunter up, UP stands up; in the
    beast's den UP + A fires a rocket (one fewer) that opens the barred door;
    the beast walks and fires its spreads at 50 screens a second.
+5. The original's fixes: the frame counter goes up once a tick; the
+   invulnerable hunter is drawn on about half the frames; a hit creature's
+   8-frame flash (in the bot's game); the citadel's creatures on row 12;
+   the item box closes after 90 frames and GAME OVER (with the score) goes
+   to the title after 180.
 
 `--shots` rewrites `images/` (title, the den, the GIF of the bot's game).
