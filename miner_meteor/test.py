@@ -61,7 +61,8 @@ failures = []
 # the original's palette indices
 WHITE, YELLOW, GREEN, RED, BLUE = 1, 6, 7, 9, 11
 # gs (game.h): +0 mode, +1 level_index, +2 lives, +3 keys_remaining,
-# +5 level_ticks, +7 score, +11 air, +13 state_timer, +15 player x, +17 y
+# +5 level_ticks, +7 score, +11 air, +13 state_timer, +15 player x, +17 y,
+# +25 player walk frame
 GM_TITLE, GM_PLAYING, GM_WIN, GM_LOSE, GM_LEVELWIN = 0, 1, 2, 3, 4
 
 ROUTES = []
@@ -83,10 +84,11 @@ def has_colour(e, idx, box):
 
 
 def state(e):
-    m = e.read_mem(e.addr("_gs"), 19)
+    m = e.read_mem(e.addr("_gs"), 26)
     return {"mode": m[0], "level": m[1], "lives": m[2], "keys": m[3], "lt": m[5] | m[6] << 8,
             "score": int.from_bytes(m[7:11], "little"), "air": m[11] | m[12] << 8,
-            "timer": m[13] | m[14] << 8, "x": int.from_bytes(m[15:17], "little", signed=True)}
+            "timer": m[13] | m[14] << 8, "x": int.from_bytes(m[15:17], "little", signed=True),
+            "frame": m[25]}
 
 
 def keys_of(flags):
@@ -225,10 +227,12 @@ drawn = {}
 with Emulator() as e:
     e.load(PROG)
     to_title(e)
-    gif, shot = [], [False]
+    gif, shot, walk = [], [False], set()
 
     def present(s):
         back_buffer_sampler(e, drawn)(s)
+        if s["mode"] == GM_PLAYING:
+            walk.add(s["frame"])
         if s["mode"] == GM_PLAYING and s["level"] == 5 and s["lt"] == 150 and not shot[0]:
             shot[0] = True
             e.screenshot(DOCS / "miner_meteor.png", scale=3)
@@ -256,6 +260,7 @@ with Emulator() as e:
         if m:
             prev = int(m.group(1))
     check("no life lost on the way", "mm: died" not in log)
+    check("the miner walks through all 8 walk frames (the original showed 4)", walk == set(range(8)), sorted(walk))
     m = re.search(r"mm: won score=(\d+)", log)
     check("won: all six caverns", m is not None and int(m.group(1)) == prev, m and m.group(0))
     e.screenshot(SHOTS / "won.png", scale=3)

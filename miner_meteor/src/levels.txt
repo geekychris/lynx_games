@@ -1,6 +1,7 @@
-; Miner Meteor caverns: the original's levels.cpp rows, unchanged (the three
-; rows the original marks "bug in the original: unwinnable" are its fixed rows).
-; Packed by sdk/tools/levelpack.py: tools/make_data.sh writes src/levels_data.c.
+; Miner Meteor caverns: the original's levels.cpp rows (the three rows the
+; original marks "bug in the original: unwinnable" are its fixed rows; Hazard
+; Bay's row 5 ends in '#', the original's later fix: it ended in '.', a hole
+; in the right wall). tools/mklevels.py writes src/levels_data.c.
 size 20 15
 legend . 0  # 1  K 2  E 3  c 4  < 5  > 6  ^ 7  P 8
 
@@ -27,7 +28,7 @@ room HAZARD BAY
 #....K.......K.....#
 #....##......##....#
 #..................#
-#..###..........###.
+#..###..........####
 #..................#
 #.^^^^....K....^^^.#
 #..................#
