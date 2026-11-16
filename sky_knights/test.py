@@ -70,6 +70,7 @@ def world(e):
         return list(e.read_mem(sym, n))
     gs = struct.unpack("<2l7h", e.read_mem("gs", 22))
     return {"px": words("b_px", NB), "py": bytes_("b_py", NB), "dy": words("b_dy", NB),
+            "dx": words("b_dx", NB), "facing": bytes_("b_facing", NB),
             "alive": bytes_("p_alive", 2), "lives": struct.unpack("<2b", e.read_mem("p_lives", 2)),
             "e_active": bytes_("e_active", NE), "e_type": bytes_("e_type", NE),
             "gx": [v >> 6 for v in words("g_x", NG)], "gy": [v >> 6 for v in words("g_y", NG)],
@@ -145,12 +146,22 @@ class Bot:
         return "+".join(k)
 
 
+backwards = [0]                             # enemy frames flying backwards (bot_game)
+
+
 def bot_game(e, max_frames=30000):
     bot, held, log, t, gif, shot = Bot(), "", "", 0, [], False
     while t < max_frames:
         w = world(e)
         if w["state"] == GAMEOVER:
             break
+        if w["state"] == PLAYING:
+            # an enemy faces the way it flies (facing 1 = left); the original
+            # left it facing backwards after the equal-height bounce
+            for i in range(NE):
+                dx = w["dx"][2 + i]
+                if w["e_active"][i] and dx and w["facing"][2 + i] != (dx < 0):
+                    backwards[0] += 1
         want = bot.keys(w)
         if want != held:
             e.release()
@@ -245,6 +256,8 @@ with Emulator() as e:
     pods = sum(p for *_, p in ev)
     print(f"  played {t} frames: {len(kills)} jousts won, {pods} pods, "
           f"{log.count('sk: hatch')} hatched, {log.count('sk: waveclear')} waves cleared")
+    check("every enemy faces the way it flies (also after an equal-height bounce)",
+          backwards[0] == 0, f"{backwards[0]} enemy frames backwards")
     check("jousts won", len(kills) >= 5, kills)
     check("the first joust: a swooper's 500", kills[:1] == [500], kills[:1])
     check("every joust scores 500 / 750 / 1000", kills and set(kills) <= {500, 750, 1000}, set(kills))
