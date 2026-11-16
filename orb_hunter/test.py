@@ -128,10 +128,11 @@ with Emulator() as e:
     check("PAUSE again goes on", e.run_until("oh: paused=0", 10))
 
     bot, held = Bot(target=200), [""]
-    rooms, shots_taken, gif = set(), 0, []
+    rooms, shots_taken, gif, flashed = set(), 0, [], 0
     for f in range(9000):
         p = step(e, bot, held)
         rooms.add((p["room_x"], p["room_y"]))
+        flashed = max(flashed, max(e.read_mem("e_hit_timer", 4)))
         if p["state"] == PLAYING and p["enemies"] and (p["room_x"], p["room_y"]) == (2, 3) and shots_taken == 0 \
                 and p["score"] >= 100 and p["invuln"] == 0:
             e.screenshot(SHOTS / "fight.png", scale=3)
@@ -149,6 +150,7 @@ with Emulator() as e:
     check("into the caverns (another room)", len(rooms) >= 2, str(rooms))
     check("a power-up: SPRING BOOTS (and the box closed on A)", "oh: item SPRING BOOTS" in log1, log1[-400:])
     scores = [int(s) for s in re.findall(r"oh: score=(\d+)", log1)]
+    check("a creature hit flashes (its 8-frame hit timer)", flashed == 8, flashed)
     check("creatures shot: 100 each", scores and max(scores) >= 100 and all(s % 100 == 0 for s in scores),
           str(scores[-3:]))
     check("hit by the creatures (5 a hit)", "oh: hit health=25" in log1)
@@ -259,6 +261,60 @@ with Emulator() as e:
     if fps:
         print(f"  screens a second in the beast's den: {[round(x[0], 1) for x in fps]}")
         check("the den at 50 screens a second", all(x[0] >= 49 for x in fps if x[2] == 0), str(fps))
+
+# ------------------------------------------------------------ 5. the original's fixes (amiga_games #50)
+
+def screen_has(e, rgb, box):
+    return has_colour(e.screenshot(None), rgb, box)
+
+
+with Emulator() as e:
+    e.load(PROG)
+    e.run_until("oh: ready", 600)
+    e.run(10)
+    e.press("A")
+    e.run_until("oh: start room=2,2", 60)
+    pal = e.palette()
+    gs = e.addr("gs")
+    # one frame count a tick (the original counted twice a loop, so its
+    # drawing always saw the count odd)
+    f0 = e.peek16(gs + GS_FRAME)
+    e.run(20)
+    df = e.peek16(gs + GS_FRAME) - f0
+    check("the frame counter goes up once a tick", 19 <= df <= 21, df)
+    # the start's invulnerability: the hunter flickers (seen on about half the frames)
+    seen = 0
+    for _ in range(20):
+        e.run(1)
+        seen += screen_has(e, tuple(pal[2]), (0, 6, 160, 102))
+    check("invulnerable: the hunter flickers (drawn every other frame)", 7 <= seen <= 13, seen)
+    e.run(60)
+    # the citadel (3,4), the way the room change does it: from the right
+    # edge of 2,4 on the citadel's floor; its creatures stand on row 12
+    e.write_mem(gs, bytes([2, 4]))
+    e.write_mem(e.addr("h_x"), struct.pack("<h", (320 - 14) * FIX))
+    e.write_mem(e.addr("h_y"), struct.pack("<h", (12 * 16 - 16) * FIX))
+    check("into the citadel (room 3,4)", e.run_until("oh: room 3,4", 10))
+    on = list(e.read_mem("e_on", 4))
+    ys = [struct.unpack("<h", e.read_mem(e.addr("e_y") + 2 * i, 2))[0] // FIX for i in range(4) if on[i]]
+    check("the citadel's creatures spawn on its floor (row 12, not in it at row 13)",
+          len(ys) == 2 and all(y == 12 * 16 for y in ys), ys)
+    e.run(10)
+    e.screenshot(SHOTS / "citadel.png", scale=3)
+    # the item box closes after game.c's 90 frames (or a press)
+    e.write_mem(gs + 6, struct.pack("<hh", 4, 90))
+    e.run(60)
+    check("the item box stays up without a press...", e.peek(gs + 6) == 4)
+    e.run(40)
+    check("...and closes after 90 frames", e.peek(gs + 6) == 1)
+    # GAME OVER goes back to the title after 180 frames (or a press)
+    e.write_mem(e.addr("h_health"), struct.pack("<h", 0))
+    e.write_mem(gs + 6, struct.pack("<hh", 2, 1))       # dead: GAME OVER next frame
+    check("GAME OVER", e.run_until("oh: gameover", 10))
+    e.run(30)
+    e.screenshot(SHOTS / "gameover_score.png", scale=3)
+    check("GAME OVER shows the score", screen_has(e, tuple(pal[7]), (0, 54, 160, 61)))
+    check("...and goes back to the title by itself after 180 frames", e.run_until("oh: title", 180))
 
 if "--log" in sys.argv:
     print(log1)

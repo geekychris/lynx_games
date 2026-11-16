@@ -250,10 +250,11 @@ static void objects(void)
         sprite();
     }
 
-    /* the hunter (draw_hunter). port: original bug: its "flash while
-       invulnerable" test sees the frame counter always odd (it goes up twice
-       a loop) and hides the hunter for the whole time; here he flickers. */
-    if (!(h_invuln_timer > 0 && (g & 2)) && (y = scr_y(FIX_INT(h_y))) != 0) {
+    /* the hunter (draw_hunter): flickers while invulnerable, every other
+       frame. (port: original bug, fixed in amiga_games #50: the frame
+       counter went up twice a loop, so the test always saw it odd and hid
+       the hunter for the whole time) */
+    if (!(h_invuln_timer > 0 && (g & 1)) && (y = scr_y(FIX_INT(h_y))) != 0) {
         os = &hunter_s;
         ox = (int16_t)h_x >> 5;
         oy = y;
@@ -309,11 +310,12 @@ static void objects(void)
         }
     }
 
-    /* the creatures (draw_enemies). port: original bug: the same odd
-       counter and its "flash when hit" test (every creature's timer runs)
-       hide every creature in the original; here they are always drawn. */
+    /* the creatures (draw_enemies): flash for 8 frames when hit. (port:
+       original bug, fixed in amiga_games #50: its "flash when hit" test used
+       the AI's timer, which always runs, with the always-odd counter, so no
+       creature was ever drawn) */
     for (i = 0; i < MAX_ENEMIES; ++i) {
-        if (!e_on[i] || !(y = scr_y(FIX_INT(e_y[i])))) continue;
+        if (!e_on[i] || (e_hit_timer[i] && (g & 1)) || !(y = scr_y(FIX_INT(e_y[i])))) continue;
         os = enemy_p[i];
         ox = e_x[i] >> 5;
         oy = y;
@@ -370,10 +372,17 @@ static void solid(SCB_REHV_PAL *s, int16_t x, int16_t y, uint8_t w, uint8_t h, u
     spr_box(s, x, y, w, h, c == COL_BG ? COL_BGD : c);
 }
 
+/* port: "WYRM HOLLOW" is "W. HOLLOW": the score takes the HUD's room
+   after the name (the original had a second HUD line for it) */
 static const char *const area_names[6] = {
-    "CAVERN", "MAGMA", "BEAST DEN", "WYRM HOLLOW", "CITADEL", "SURFACE"
+    "CAVERN", "MAGMA", "BEAST DEN", "W. HOLLOW", "CITADEL", "SURFACE"
 };
 static WORD hud_health = -1, hud_missiles = -1;
+static int32_t hud_score = -1;
+static char hud_score_s[12];
+static uint8_t hud_score_n, hud_score_w, hud_sc;   /* digits, width to clear, bit n: buffer n redraws it */
+static uint8_t hud_sc_wait;            /* frames left to wait for a quiet frame */
+static SCB_REHV_PAL score_box;
 static int8_t hud_ry = -1;
 static uint8_t hud_hasm = 255;
 static SCB_REHV_PAL hud_box[4], dot_s;
@@ -415,11 +424,47 @@ static void hud_numbers(void)
 
 static uint8_t hud_num;             /* bit n: buffer n redraws the numbers */
 
+/* hud_score_s = gs.score. port (speed): every score is 100s (a creature
+   100, a boss 2000), so the digits of the hundreds are counted up (ltoa's
+   32-bit divisions made a creature's last frame late) */
+static uint8_t sdig[6];                 /* hundreds, units first */
+static void score_digits(void)
+{
+    static uint8_t k, n;
+    if (gs.score < hud_score || hud_score < 0) {
+        memset(sdig, 0, sizeof sdig);
+        hud_score = 0;
+    }
+    while (hud_score < gs.score) {
+        hud_score += 100;
+        for (k = 0; k < 6 && ++sdig[k] == 10; ++k) sdig[k] = 0;
+    }
+    n = 6;
+    while (n && !sdig[n - 1]) --n;
+    if (!n) { hud_score_s[0] = '0'; hud_score_s[1] = 0; return; }
+    for (k = 0; n; ) hud_score_s[k++] = (char)('0' + sdig[--n]);
+    hud_score_s[k++] = '0';
+    hud_score_s[k++] = '0';
+    hud_score_s[k] = 0;
+}
+
 static void hud(void)
 {
     if (gs.room_y != hud_ry) {
         hud_ry = gs.room_y;
         hud_dirty = 3;
+    }
+    /* port (speed): a new score is drawn in a quiet frame (few sprites),
+       within 2 s: on the kill's frame or among its sparks, the digits made
+       a frame late */
+    if (gs.score != hud_score && !hud_sc_wait) hud_sc_wait = 100;
+    if (hud_sc_wait && (rd_objs < 8 || !--hud_sc_wait)) {
+        hud_sc_wait = 0;
+        score_digits();
+        hud_score_w = hud_score_n;      /* (clear the old digits too: a new game's 0) */
+        hud_score_n = (uint8_t)strlen(hud_score_s);
+        if (hud_score_n > hud_score_w) hud_score_w = hud_score_n;
+        hud_sc = 3;
     }
     if (h_health != hud_health || h_missiles != hud_missiles || h_has_missiles != hud_hasm) {
         hud_health = h_health;
@@ -440,6 +485,16 @@ static void hud(void)
         spr_draw(&hud_box[0]);
         text_small(1, 0, COL_WHITE, "PW");
         text_small(74, 0, COL_ITEM, area_names[gs.room_y < 0 ? 0 : gs.room_y > 5 ? 5 : gs.room_y]);
+        hud_sc |= (uint8_t)(1 << cur);
+    }
+    /* the score, right-aligned before the map (a box of background behind
+       it, so it redraws without the rest). The original's fix (amiga_games
+       #50): kept but never shown (a leftover debug line was where it is) */
+    if (hud_sc & (1 << cur)) {
+        hud_sc &= (uint8_t)~(1 << cur);
+        solid(&score_box, 131 - 4 * hud_score_w, 0, 4 * hud_score_w, 5, COL_BG);
+        spr_draw(&score_box);
+        text_small(131 - 4 * hud_score_n, 0, COL_WHITE, hud_score_s);
     }
     if (hud_num & (1 << cur)) {
         hud_num &= (uint8_t)~(1 << cur);
