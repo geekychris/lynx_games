@@ -87,10 +87,21 @@ Suzy's divider; PAUSE (the Lynx's button) pauses, as in the other Lynx
 ports; the title's knight is drawn at twice the size; the title's help
 lines name the Lynx's buttons (were P1 ARROWS + SPACE, ESC TO QUIT).
 
-**Original bug fixed** (`port: original bug`): the original drew the lance
-and the mount's head on the left for a knight flying right and on the right
-for one flying left, so every knight flew backwards; here they point the
-way the knight flies (as the Atari 8-bit port).
+**Original bugs fixed** (`port: original bug`; amiga_games #51 fixed them in
+the original too):
+
+- the original drew the lance and the mount's head on the left for a knight
+  flying right and on the right for one flying left, so every knight flew
+  backwards; here they point the way the knight flies (as the Atari 8-bit
+  port);
+- after the equal-height bounce the enemy's facing was left as it was, so it
+  flew backwards until its next re-aim (up to 64 frames); here it turns with
+  its new speed. The test checks every enemy faces the way it flies on every
+  frame of the bot's game.
+
+The original's third fix (the title's 1/2-player highlight toggled every
+frame FLAP was held) has nothing to apply to here: the Lynx title has no
+selection (one player, A or B starts).
 
 ## Speed
 

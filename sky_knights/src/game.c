@@ -505,6 +505,10 @@ uint8_t joust(void)
         /* Equal height - bounce off */
         b_dx[i] = (px < ex) ? -MOVE_SPEED : MOVE_SPEED;
         b_dx[b] = (ex < px) ? -ENEMY_SLOW : ENEMY_SLOW;
+        /* port: original bug (fixed in amiga_games #51): the enemy's facing
+           was left as it was, so it flew backwards until its next re-aim
+           (up to 64 frames); it faces the way it now flies */
+        b_facing[b] = (ex < px) ? 1 : 0;
         b_dy[i] = FLAP_IMPULSE / 3;
         b_dy[b] = FLAP_IMPULSE / 3;
     }
