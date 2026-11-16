@@ -35,20 +35,39 @@ one `GameState`), taken unchanged from the Atari 8-bit port (a8dev
 `src/plat.c`/`tmap.c` holding the original's `update_player` collision code
 and `src/levels.txt` its six caverns row for row (with the three rows the
 original fixed, and the original's later fixes: Hazard Bay's right wall
-closed, Guardian Alley's first guardian on its ledge, amiga_games #53). Gravity, the jump and its edge trigger, walk and conveyor
-speeds, the collision snaps, the 18-tick crumbling floors, the guardians'
+closed, Guardian Alley's first guardian on its ledge, amiga_games #53;
+the landing fix and the two cavern changes below). Gravity, the jump and its edge trigger, walk and conveyor
+speeds, the side and ceiling snaps, the 18-tick crumbling floors, the guardians'
 patrols and hit boxes, the air draining one unit every 6 ticks, the
 scoring, three lives and the 60 / 150 / 200-tick screens are the original's.
 The logic runs at its PAL rate, one tick a frame at 50 Hz.
 
-The proof that it plays the same: the Spectrum port's solver found the
-fastest route through each cavern over this logic (`tools/routes.json`);
-test.py feeds the routes in through the pad and all six caverns are
-cleared without a death, each in exactly the route's number of ticks.
-Guardian Alley's route (259 ticks) is the Atari ST port's
-(`atari_st_games/miner_meteor/tools/route_search.cpp`): the solver's
-211-tick route was made for the guardian inside the ledge and loses a life
-with it on top.
+**The landing fix** (the original's, amiga_games): a fall onto a floor
+put the miner on the tile row under the top of its old position, which
+after an unaligned fall was a whole tile above the floor. The miner then
+stood on air, dropped and snapped back up every 6 ticks (a bob) until it
+moved, and could jump from 16 px higher. `plat_move_y` (`src/plat.c`) now
+puts the feet on the floor tile. Every earlier route used those 16 px, and
+two caverns could no longer be finished without them, so their layouts
+changed too (bug in the original: unwinnable; see `src/levels.txt`):
+
+- **Hazard Bay**: the ledge in row 10 (`#....##............#`) is in row 9
+  (`#....##........##..#`); from row 10 the jump stopped 14 px short of
+  the row-5 ledge and its key.
+- **Collapsing Attic**: the row-8 ledge and its key move 6 columns left
+  (`#.......cccc.......#`, `#........K.........#`) and the row-3 ledge 2
+  (`#......cccc........#`): each was out of jump reach of the one below.
+
+The proof that it plays the same: `tools/routes.sh search N` (a host
+build of this port's `game.c`, `plat.c`, `tmap.c` and levels, with
+`tools/routes_host.cpp`) searches each cavern breadth-first, one layer a
+tick, and the routes in `tools/routes.json` are what it found: the
+shortest for caverns 1-4 (271, 252, 842 and 256 ticks; exhaustive), and
+for Collapsing Attic (209) and Full Ensemble (313) with a 20,000-state
+beam, whose exhaustive searches need too much memory. `tools/routes.sh`
+replays them on the host: all six cleared, no death, and never standing on
+air. test.py feeds the same routes in through the pad on the Lynx and all
+six caverns are cleared, each in exactly the route's number of ticks.
 
 The screens follow `render.cpp`: the tiles and sprites come from the
 original's tile sheet (its baked `tilesheet_data.cpp`, `art/sheet16.txt`),
@@ -100,7 +119,7 @@ end screens have its text and colours.
   after a death) takes two frames, one tick a frame late. Over the six
   caverns: 49.9 fps in a release build (5 late frames in 2,323), 49-50 in
   the harness build.
-- Memory: program, data and BSS end at `$988D` (of `$B837`); the release
+- Memory: program, data and BSS end at `$9888` (of `$B837`); the release
   cartridge is 27.3 KB.
 
 ## Test
@@ -135,4 +154,5 @@ pictures in `images/`.
 | `src/main.c` | Lynx front end: drawing, HUD, title and end screens, pause, log |
 | `src/art.c` | tiles and sprites, made by `tools/mkart.py` from `art/sheet16.txt` |
 | `src/sound.c` | the effects on Mikey |
-| `tools/routes.json` | the solver's routes (the test plays them) |
+| `tools/routes.json` | the routes through the six caverns (the test plays them) |
+| `tools/routes.sh`, `routes_host.cpp` | the routes on the host: replay them, or search one (`search N [BEAM]`) |

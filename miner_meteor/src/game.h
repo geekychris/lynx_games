@@ -3,7 +3,8 @@
  * (game.h / game.cpp). No drawing, no input, no sound: game_tick(input) once
  * per 50 Hz tick. Taken unchanged from the Atari 8-bit port (a8dev
  * projects/miner_meteor, itself the ZX Spectrum port's), which proved it with
- * the Spectrum solver's routes (tools/routes.json; test.py replays them here).
+ * the Spectrum solver's routes; tools/routes.json is now this port's own
+ * (tools/routes.sh), after the landing fix in plat.c. test.py replays them.
  *
  * port: positions and speeds are int16 (the original's LONG); the grid's
  * kinds live in a tmap (sdk/include/tmap.h) and the player moves with

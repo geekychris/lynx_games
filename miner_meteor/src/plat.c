@@ -59,7 +59,12 @@ void plat_move_y(plat_body *b, int8_t gravity, int8_t max_fall)
     if (pb.vy > 0) {
         int16_t f = ny + plat_bh - 1;
         if (plat_solid_at(pb.x + 1, f) || plat_solid_at(pb.x + plat_bw - 2, f)) {
-            ny = (((pb.y >> plat_shift) + 1) << plat_shift) - plat_bh;
+            /* fix: land on the floor tile under the feet. The original
+               (and so this code) put the body on the tile row under its
+               old top, 16 px above the floor after an unaligned fall; the
+               player then dropped and snapped back every 6 ticks (a bob)
+               and could jump from 16 px up (amiga_games miner_meteor) */
+            ny = ((f >> plat_shift) << plat_shift) - plat_bh;
             pb.vy = 0;
             pb.on_ground = 1;
         }

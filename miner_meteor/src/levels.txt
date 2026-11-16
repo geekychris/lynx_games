@@ -1,7 +1,15 @@
 ; Miner Meteor caverns: the original's levels.cpp rows (the three rows the
 ; original marks "bug in the original: unwinnable" are its fixed rows; Hazard
 ; Bay's row 5 ends in '#', the original's later fix: it ended in '.', a hole
-; in the right wall). tools/mklevels.py writes src/levels_data.c.
+; in the right wall). Two more fixes for the landing fix (src/plat.c), which
+; took away the 16 px the old snap gave a jump - bug in the original: unwinnable:
+;   Hazard Bay: the row-10 ledge "#....##............#" is in row 9 (row 10 is
+;     empty): from row 10 the jump stopped 14 px short of the row-5 ledge
+;   Collapsing Attic: the row-8 ledge and its key ("#............cccc..#",
+;     "#..............K...#") moved left 6 columns, the row-3 ledge
+;     ("#........cccc......#") 2 columns: each was out of jump reach
+; Rows can't carry comments here (tools/mklevels.py reads them whole).
+; tools/mklevels.py writes src/levels_data.c.
 size 20 15
 legend . 0  # 1  K 2  E 3  c 4  < 5  > 6  ^ 7  P 8
 
@@ -32,8 +40,8 @@ room HAZARD BAY
 #..................#
 #.^^^^....K....^^^.#
 #..................#
-#..............##..#
-#....##............#
+#....##........##..#
+#..................#
 #..................#
 #..P.....^.^^....E.#
 ####################
@@ -77,12 +85,12 @@ room COLLAPSING ATTIC
 ####################
 #..................#
 #.........K........#
-#........cccc......#
+#......cccc........#
 #..................#
 #..K...............#
 #.cccc.............#
-#..............K...#
-#............cccc..#
+#........K.........#
+#.......cccc.......#
 #..................#
 #....K.............#
 #..cccc............#
