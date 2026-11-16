@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" alt="Lynx Games logo" width="180">
+</p>
+
 # lynx_games
 
 Games for the Atari Lynx, built with [lynxdev](https://github.com/geekychris/lynxdev)
